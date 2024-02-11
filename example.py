@@ -36,7 +36,7 @@ env = RCubed(
 
 env.register(ATBA)
 
-render = True
+render = False
 
 while True:
     obs_dict = env.reset()
