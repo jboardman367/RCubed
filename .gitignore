@@ -1,0 +1,14 @@
+# Python stuff
+venv
+__pycache__
+
+# rlviser stuff
+assets.path
+notify.log
+rlviser.exe
+SDL2_64.dll
+SDL2.dll
+settings.txt
+umodel_64.exe
+umodel.exe
+assets

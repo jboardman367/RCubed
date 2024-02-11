@@ -1,0 +1,5 @@
+flask
+--pre
+rlgym[rl-sim]==2.0.0a3
+requests
+trueskill

@@ -1,0 +1,491 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+      "title":"R^3 Database",
+      "version":"1.0"
+    },
+    "tags": [
+        {
+            "name": "model",
+            "description": "Operations relating to model CRUD"
+        },
+        {
+            "name": "trueskill",
+            "description": "Operations relating to trueskill"
+        }
+    ],
+    "paths": {
+        "/models": {
+            "get": {
+                "tags": ["model"],
+                "summary": "List models",
+                "description": "`nextPage` will only be present if there is another page",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "description": "page number for pagination (defaults to 0)",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "run",
+                        "description": "Filters by run name",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "bot",
+                        "description": "Filters by bot name",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Model"
+                                            }
+                                        },
+                                        "nextPage": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "required": ["data"],
+                                    "additionalProperties": false
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": ["model"],
+                "summary": "Create model",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ModelCreate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Model"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/models/{modelId}": {
+            "get": {
+                "tags": ["model"],
+                "summary": "Fetch model",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Model"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "tags": ["model"],
+                "summary": "Update model",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ModelUpdate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Model"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["model"],
+                "summary": "Delete model",
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            }
+        },
+        "/ts/match": {
+            "post": {
+                "tags": ["trueskill"],
+                "summary": "Get an evaluation match",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EvaluationRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Match"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/ts/result": {
+            "post": {
+                "tags": ["trueskill"],
+                "summary": "Upload evaluation match results",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MatchResult"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/ts/opponents": {
+            "post": {
+                "tags": ["trueskill"],
+                "summary": "Request suitable opponents",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/OpponentRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string",
+                                        "description": "Model ID"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Model": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "runName": {
+                        "type": "string"
+                    },
+                    "botName": {
+                        "type": "string"
+                    },
+                    "created": {
+                        "type": "string"
+                    },
+                    "location": {
+                        "$ref": "#/components/schemas/ModelLocation"
+                    },
+                    "ts": {
+                        "$ref": "#/components/schemas/TrueSkill"
+                    },
+                    "steps": {
+                        "type": "integer"
+                    }
+                },
+                "required": ["id", "created", "location", "botId", "runName"],
+                "additionalProperties": false
+            },
+            "ModelCreate": {
+                "type": "object",
+                "properties": {
+                    "runName": {
+                        "type": "string"
+                    },
+                    "location": {
+                        "$ref": "#/components/schemas/ModelLocation"
+                    },
+                    "botName": {
+                        "type": "string"
+                    },
+                    "steps": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "ModelUpdate": {
+                "type": "object",
+                "properties": {
+                    "runName": {
+                        "type": "string"
+                    },
+                    "location": {
+                        "$ref": "#/components/schemas/ModelLocation"
+                    },
+                    "botName": {
+                        "type": "string"
+                    },
+                    "ts": {
+                        "$ref": "#/components/schemas/TrueSkillUpdate"
+                    },
+                    "steps": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "ModelLocation": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string"
+                    },
+                    "value": {
+                        "type": "string"
+                    }
+                }
+            },
+            "TrueSkill": {
+                "type": "object",
+                "properties": {
+                    "mu": {
+                        "type": "number"
+                    },
+                    "sigma": {
+                        "type": "number"
+                    }
+                },
+                "required": ["mu", "sigma"],
+                "additionalProperties": false
+            },
+            "TrueSkillUpdate": {
+                "type": "object",
+                "properties": {
+                    "mu": {
+                        "type": "number"
+                    },
+                    "sigma": {
+                        "type": "number"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "Error": {
+                "type": "object",
+                "properties": {
+                    "error": {
+                        "type": "string"
+                    }
+                },
+                "required": ["error"],
+                "additionalProperties": false
+            },
+            "Match": {
+                "type": "object",
+                "properties": {
+                    "team0": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "description": "model ID"
+                        }
+                    },
+                    "team1": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "description": "model ID"
+                        }
+                    }
+                },
+                "required": ["team0", "team1"]
+            },
+            "MatchResult": {
+                "type": "object",
+                "properties": {
+                    "match": {
+                        "$ref": "#/components/schemas/Match"
+                    },
+                    "result": {
+                        "type": "integer",
+                        "enum": [0, 1]
+                    }
+                }
+            },
+            "ModelFilter": {
+                "type": "object",
+                "description": "Filter for models with certain bot and run names",
+                "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "description": "run name"
+                    }
+                }
+            },
+            "EvaluationRequest": {
+                "type": "object",
+                "properties": {
+                    "bots": {
+                        "$ref": "#/components/schemas/ModelFilter"
+                    }
+                },
+                "required": ["bots"],
+                "additionalProperties": false
+            },
+            "OpponentRequest": {
+                "type": "object",
+                "properties": {
+                    "for": {
+                        "$ref": "#/components/schemas/TrueSkill"
+                    },
+                    "numOpponents": {
+                        "type": "number",
+                        "description": "Number of possible opponents to fetch (the actual number can be less than this"
+                    },
+                    "bots": {
+                        "$ref": "#/components/schemas/ModelFilter"
+                    }
+                },
+                "required": ["numOpponents", "for", "bots"]
+            }
+        }
+    }
+}
